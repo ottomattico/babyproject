@@ -5,17 +5,18 @@ async def debug():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
-        await page.goto("https://www.carestino.com.uy/productos/cunas/", wait_until="networkidle", timeout=30000)
+        await page.goto("https://www.mvdkids.com/descanso/practicunas", wait_until="networkidle", timeout=30000)
 
-        # Walk up more levels
-        card = await page.query_selector('a[href*="/producto/"]')
-        parent = await card.evaluate_handle("""el => {
-            let p = el;
-            for (let i = 0; i < 6; i++) p = p.parentElement;
-            return p;
-        }""")
-        html = await parent.evaluate("el => el.outerHTML")
-        print(html[:4000])
+        # Find product cards
+        cards = await page.query_selector_all('a[href*="/catalogo/"]')
+        print(f"Links with /catalogo/: {len(cards)}")
+
+        if cards:
+            # Show parent of first card
+            parent = await cards[0].evaluate_handle("el => el.parentElement")
+            html = await parent.evaluate("el => el.outerHTML")
+            print("\n--- Parent of first card ---")
+            print(html[:3000])
 
         await browser.close()
 
