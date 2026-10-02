@@ -9,7 +9,7 @@ export default async function Home({
   searchParams: Promise<{ store?: string }>;
 }) {
   const { store } = await searchParams;
-  const all = getProducts("cunas");
+  const all = await getProducts("cunas");
   const products = store ? all.filter((p) => p.store === store) : all;
   const stores = [...new Set(all.map((p) => p.store))].sort();
 

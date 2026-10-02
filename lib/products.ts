@@ -1,9 +1,10 @@
-import fs from "fs";
-import path from "path";
+import { supabase } from "./supabase";
 
 export type Product = {
+  uid: string;
   id: string;
   name: string;
+  brand: string | null;
   price: number | null;
   price_text: string;
   original_price: number | null;
@@ -16,18 +17,15 @@ export type Product = {
   scraped_at: string;
 };
 
-export function getProducts(category?: string): Product[] {
-  const filePath = path.join(process.cwd(), "data", "products.json");
-
-  if (!fs.existsSync(filePath)) {
+export async function getProducts(category?: string): Promise<Product[]> {
+  let query = supabase.from("products").select("*").order("store").order("name");
+  if (category) {
+    query = query.eq("category", category);
+  }
+  const { data, error } = await query;
+  if (error) {
+    console.error("Supabase error:", error.message);
     return [];
   }
-
-  const raw = fs.readFileSync(filePath, "utf-8");
-  const all: Product[] = JSON.parse(raw);
-
-  if (category) {
-    return all.filter((p) => p.category === category);
-  }
-  return all;
+  return data as Product[];
 }

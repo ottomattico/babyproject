@@ -1,14 +1,13 @@
 import asyncio
 import json
 import re
-import os
 from datetime import datetime
 from playwright.async_api import async_playwright
+from db import upsert_products
 
 STORE = "MVD Kids"
 BASE_URL = "https://www.mvdkids.com"
 PRACTICUNAS_URL = f"{BASE_URL}/descanso/practicunas"
-OUTPUT_FILE = os.path.join(os.path.dirname(__file__), "../data/products.json")
 
 
 def clean_price(sim: str, monto: str) -> tuple[int | None, str]:
@@ -84,32 +83,11 @@ async def scrape_practicunas() -> list[dict]:
     return products
 
 
-def save_products(products: list[dict]):
-    existing = []
-    if os.path.exists(OUTPUT_FILE):
-        with open(OUTPUT_FILE, "r", encoding="utf-8") as f:
-            try:
-                existing = json.load(f)
-            except json.JSONDecodeError:
-                existing = []
-
-    filtered = [
-        p for p in existing
-        if not (p.get("store") == STORE and p.get("category") == "cunas")
-    ]
-    merged = filtered + products
-
-    os.makedirs(os.path.dirname(OUTPUT_FILE), exist_ok=True)
-    with open(OUTPUT_FILE, "w", encoding="utf-8") as f:
-        json.dump(merged, f, ensure_ascii=False, indent=2)
-
-    print(f"Saved {len(products)} products → {OUTPUT_FILE} ({len(merged)} total)")
-
-
 async def main():
     products = await scrape_practicunas()
     if products:
-        save_products(products)
+        count = upsert_products(products)
+        print(f"Upserted {count} products to Supabase")
         print("\nSample product:")
         print(json.dumps(products[0], ensure_ascii=False, indent=2))
     else:
