@@ -87,7 +87,8 @@ async def scrape_cunas() -> list[dict]:
                 "image_alt": img_alt,
                 "product_url": f"{BASE_URL}{href}" if href else "",
                 "store": STORE,
-                "category": "cunas",
+                "category": "descanso",
+                "subcategory": "descanso-practicunas",
                 "scraped_at": datetime.utcnow().isoformat(),
             })
 

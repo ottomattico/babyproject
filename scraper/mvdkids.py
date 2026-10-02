@@ -74,7 +74,8 @@ async def scrape_practicunas() -> list[dict]:
                 "image_alt": img_alt,
                 "product_url": href or "",
                 "store": STORE,
-                "category": "cunas",
+                "category": "descanso",
+                "subcategory": "descanso-practicunas",
                 "scraped_at": datetime.utcnow().isoformat(),
             })
 
