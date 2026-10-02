@@ -1,0 +1,57 @@
+import { Product } from "@/lib/products";
+
+export default function ProductCard({ product }: { product: Product }) {
+  const hasDiscount =
+    product.original_price && product.price && product.original_price > product.price;
+
+  const discountPercent = hasDiscount
+    ? Math.round((1 - product.price! / product.original_price!) * 100)
+    : null;
+
+  return (
+    <a
+      href={product.product_url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className="group flex flex-col bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition-shadow border border-gray-100"
+    >
+      {/* Image */}
+      <div className="relative aspect-square overflow-hidden bg-gray-50">
+        {product.image_url ? (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img
+            src={product.image_url}
+            alt={product.image_alt}
+            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center text-gray-300 text-4xl">
+            ?
+          </div>
+        )}
+        {discountPercent && (
+          <span className="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full">
+            -{discountPercent}%
+          </span>
+        )}
+      </div>
+
+      {/* Info */}
+      <div className="p-4 flex flex-col gap-1 flex-1">
+        <p className="text-xs text-gray-400 uppercase tracking-wide">{product.store}</p>
+        <h2 className="text-sm font-medium text-gray-800 line-clamp-2 leading-snug">
+          {product.name}
+        </h2>
+
+        <div className="mt-auto pt-3 flex items-baseline gap-2">
+          <span className="text-lg font-bold text-gray-900">{product.price_text}</span>
+          {product.original_price_text && (
+            <span className="text-sm text-gray-400 line-through">
+              {product.original_price_text}
+            </span>
+          )}
+        </div>
+      </div>
+    </a>
+  );
+}
