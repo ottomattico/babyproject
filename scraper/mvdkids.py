@@ -164,12 +164,20 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
                 digits = re.sub(r"[^0-9]", "", cm)
                 card_price = int(digits) if digits else None
 
-        img_el = await card.query_selector("a.img img")
-        img_src = ""
-        img_alt = name
-        if img_el:
+        # Find first valid product image (skip badges/tags like "Nuevo", "Oferta")
+        img_src, img_alt = "", name
+        for img_el in await card.query_selector_all("a.img img"):
+            src = await img_el.get_attribute("data-src") or await img_el.get_attribute("src") or ""
+            alt = (await img_el.get_attribute("alt") or "").lower()
+            if not src:
+                continue
+            if any(x in alt for x in ["nuevo", "new", "oferta", "sale", "tag", "badge"]):
+                continue
+            if any(x in src.lower() for x in ["/tags/", "/badges/", "/stickers/", ".mp4"]):
+                continue
+            img_src = src
             img_alt = await img_el.get_attribute("alt") or name
-            img_src = await img_el.get_attribute("data-src") or await img_el.get_attribute("src") or ""
+            break
         if img_src.startswith("//"):
             img_src = "https:" + img_src
 
