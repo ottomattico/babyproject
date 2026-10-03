@@ -1,4 +1,5 @@
 import { getProducts, getCategories, toPesos } from "@/lib/products";
+import Link from "next/link";
 import { getUsdToUyu } from "@/lib/exchange";
 import ProductCard from "@/app/components/ProductCard";
 import StoreFilter from "@/app/components/StoreFilter";
@@ -23,6 +24,8 @@ export default async function CategoryPage({
   const cat = categories.find((c) => c.id === slug);
   if (!cat) notFound();
 
+  const subCategories = categories.filter((c) => c.parent_id === slug);
+
   let products = allProducts;
   if (store) products = products.filter((p) => p.store === store);
   if (banco) products = products.filter((p) => p.card_bank === banco);
@@ -37,7 +40,29 @@ export default async function CategoryPage({
   }
 
   return (
-    <div>
+    <div className="flex gap-8">
+      {/* Sidebar subcategorías */}
+      {subCategories.length > 0 && (
+        <aside className="hidden md:block w-44 shrink-0 pt-2">
+          <p className="text-[11px] font-extrabold text-[#8E9FA0] uppercase tracking-widest mb-3">
+            {cat.label}
+          </p>
+          <ul className="flex flex-col gap-1">
+            {subCategories.map((sub) => (
+              <li key={sub.id}>
+                <Link
+                  href={`/categoria/${sub.id}`}
+                  className="block text-sm font-semibold text-[#1A1A1A] hover:text-[#72C5A2] transition-colors py-1"
+                >
+                  {sub.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      )}
+
+      <div className="flex-1 min-w-0">
       <div className="mb-8 pt-2">
         <h1 className="text-3xl font-extrabold text-[#1A1A1A]">{cat.label}</h1>
         <p className="text-sm text-[#8E9FA0] font-medium mt-1.5">
@@ -73,6 +98,7 @@ export default async function CategoryPage({
           <p className="text-lg font-medium">Sin productos todavía</p>
         </div>
       )}
+      </div>
     </div>
   );
 }
