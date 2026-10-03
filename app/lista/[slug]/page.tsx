@@ -92,7 +92,7 @@ export default async function ListaPage({
 }
 
 function ListItem({ item, isOwner }: { item: any; isOwner: boolean }) {
-  const product = item.products;
+  const product = item.product;
   const isClaimed = !!item.claimed_by;
 
   return (
