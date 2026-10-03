@@ -9,8 +9,8 @@ export default async function Home() {
     <div>
       <div className="mb-12 pt-4">
         <h1 className="text-4xl font-extrabold text-[#1A1A1A] leading-tight">
-          Todo para tu bebé.<br />
-          <span className="text-[#72C5A2]">Al mejor precio.</span>
+          Lo lindo de<br />
+          <span className="text-[#72C5A2]">encontrarlo todo.</span>
         </h1>
         <p className="text-[#8E9FA0] mt-3 text-base font-medium">
           Comparamos precios en Baby City, MVD Kids, Bebesit, Carestino, Chicco y más.

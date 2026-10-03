@@ -27,7 +27,7 @@ export default async function RootLayout({
                 <img src="/logo.svg" alt="Mini Klub" className="h-12 w-auto" />
               </a>
               <p className="text-sm text-white/80 hidden sm:block font-semibold">
-                Compará precios en Uruguay
+                Lo lindo de encontrarlo todo.
               </p>
             </div>
           </div>
