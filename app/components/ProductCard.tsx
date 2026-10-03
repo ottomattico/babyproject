@@ -60,23 +60,25 @@ export default function ProductCard({ product }: { product: Product }) {
         </h2>
 
         <div className="mt-auto pt-2 flex flex-col gap-0.5">
-          {originalDisplay && (
-            <span className="text-xs text-[#6B6B6B] line-through">{originalDisplay}</span>
-          )}
+          <span className="text-xs text-[#6B6B6B] line-through min-h-[1rem]">
+            {originalDisplay ?? ""}
+          </span>
           <span className="text-base font-bold text-[#0F0F0F]">
             {priceDisplay || product.price_text}
           </span>
-          {cardPriceDisplay && (
-            <div className="flex items-center gap-1.5 mt-0.5">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img
-                src={`/banks/${product.card_bank?.toLowerCase()}.png`}
-                alt={product.card_bank ?? ""}
-                className="h-3.5 object-contain"
-              />
-              <span className="text-sm font-semibold text-[#FF4D2E]">{cardPriceDisplay}</span>
-            </div>
-          )}
+          <div className="flex items-center gap-1.5 mt-0.5 min-h-[1.25rem]">
+            {cardPriceDisplay && (
+              <>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={`/banks/${product.card_bank?.toLowerCase()}.png`}
+                  alt={product.card_bank ?? ""}
+                  className="h-3.5 object-contain"
+                />
+                <span className="text-sm font-semibold text-[#FF4D2E]">{cardPriceDisplay}</span>
+              </>
+            )}
+          </div>
         </div>
 
         <p className="text-[10px] text-[#C0BAB0] mt-1">
