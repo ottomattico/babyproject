@@ -23,11 +23,21 @@ PAGES = [
 ]
 
 
-def clean_price(text: str) -> int | None:
-    if not text:
-        return None
-    digits = re.sub(r"[^0-9]", "", text)
-    return int(digits) if digits else None
+def parse_price_and_discount(raw: str) -> tuple[int | None, str, int | None, int | None]:
+    """Returns (price, price_text, original_price, discount_pct)"""
+    raw = " ".join(raw.split())
+    # Extract discount % if present: "$ 3.514 5% OFF"
+    pct_match = re.search(r"(\d+)%\s*OFF", raw, re.IGNORECASE)
+    discount_pct = int(pct_match.group(1)) if pct_match else None
+    # Remove "% OFF" part to get clean price text
+    price_text = re.sub(r"\d+%\s*OFF", "", raw, flags=re.IGNORECASE).strip()
+    digits = re.sub(r"[^0-9]", "", price_text)
+    price = int(digits) if digits else None
+    # Calculate original price from discount %
+    original_price = None
+    if discount_pct and price:
+        original_price = round(price / (1 - discount_pct / 100))
+    return price, price_text, original_price, discount_pct
 
 
 async def scrape_page(page, url: str, category: str, subcategory: str) -> list[dict]:
@@ -62,8 +72,8 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         if not name:
             continue
 
-        price_text = " ".join((await price_el.inner_text()).split()) if price_el else ""
-        original_text = (await original_el.inner_text()).strip() if original_el else ""
+        price_raw = (await price_el.inner_text()) if price_el else ""
+        price, price_text, original_price, _ = parse_price_and_discount(price_raw)
 
         img_el = await article.query_selector("img")
         img_src = await img_el.get_attribute("src") if img_el else ""
@@ -74,11 +84,14 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         products.append({
             "id": slug,
             "name": name,
-            "price": clean_price(price_text),
+            "price": price,
             "price_text": price_text,
-            "original_price": clean_price(original_text) if original_text else None,
-            "original_price_text": original_text or None,
+            "original_price": original_price,
+            "original_price_text": f"$ {original_price:,}".replace(",", ".") if original_price else None,
             "currency": "UYU",
+            "card_bank": None,
+            "card_discount_pct": None,
+            "card_price": None,
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": f"{BASE_URL}{href}" if href else "",
