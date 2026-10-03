@@ -141,6 +141,21 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         monto = (await monto_el.inner_text()).strip() if monto_el else ""
         price_val, price_text = clean_price(sim, monto)
 
+        # Bank card discount (e.g. "Scotiabank 15%")
+        card_bank, card_discount_pct, card_price = None, None, None
+        bank_el = await card.query_selector("div.descuentosMDP span.img")
+        if bank_el:
+            title = await bank_el.get_attribute("title") or ""
+            m = re.match(r"(.+?)\s+(\d+)%", title)
+            if m:
+                card_bank = m.group(1).strip()
+                card_discount_pct = int(m.group(2))
+            card_monto_el = await card.query_selector("div.descuentosMDP span.precio span.monto")
+            if card_monto_el:
+                cm = (await card_monto_el.inner_text()).strip()
+                digits = re.sub(r"[^0-9]", "", cm)
+                card_price = int(digits) if digits else None
+
         img_el = await card.query_selector("a.img img")
         img_src = await img_el.get_attribute("src") if img_el else ""
         img_alt = await img_el.get_attribute("alt") if img_el else name
@@ -158,6 +173,9 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "original_price": None,
             "original_price_text": None,
             "currency": "UYU",
+            "card_bank": card_bank,
+            "card_discount_pct": card_discount_pct,
+            "card_price": card_price,
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": href or "",

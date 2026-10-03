@@ -10,6 +10,9 @@ export type Product = {
   original_price: number | null;
   original_price_text: string | null;
   currency: string;
+  card_bank: string | null;
+  card_discount_pct: number | null;
+  card_price: number | null;
   image_url: string;
   image_alt: string;
   product_url: string;

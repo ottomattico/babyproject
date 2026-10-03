@@ -63,6 +63,17 @@ export default function ProductCard({ product }: { product: Product }) {
           )}
         </div>
 
+        {product.card_bank && product.card_price && (
+          <div className="mt-2 flex items-center gap-1.5 bg-blue-50 rounded-lg px-2 py-1">
+            <span className="text-xs text-blue-700 font-medium">
+              {product.card_bank} {product.card_discount_pct}%
+            </span>
+            <span className="text-xs text-blue-900 font-bold">
+              {formatPrice(product.card_price, product.currency)}
+            </span>
+          </div>
+        )}
+
         <p className="text-xs text-gray-300 mt-1">
           * Actualizado el{" "}
           {new Date(product.scraped_at).toLocaleDateString("es-UY", {

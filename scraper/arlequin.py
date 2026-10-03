@@ -9,7 +9,24 @@ STORE = "Arlequin"
 BASE_URL = "https://arlequin.uy"
 
 PAGES = [
-    (f"{BASE_URL}/categoria-producto/cunas/", "descanso", "descanso-cunas"),
+    # Descanso
+    (f"{BASE_URL}/categoria-producto/cunas/",       "descanso",     "descanso-practicunas"),
+    (f"{BASE_URL}/categoria-producto/colecho/",     "descanso",     "descanso-colecho"),
+    (f"{BASE_URL}/categoria-producto/blanqueria/",  "descanso",     "descanso-ropa-sabanas"),
+    # Estimulación
+    (f"{BASE_URL}/categoria-producto/mecedoras/",           "estimulacion", "estim-mecedoras"),
+    (f"{BASE_URL}/categoria-producto/moviles/",             "estimulacion", "estim-moviles"),
+    (f"{BASE_URL}/categoria-producto/alfombras-y-cestos/",  "estimulacion", "estim-gimnasios"),
+    # Juguetes
+    (f"{BASE_URL}/categoria-producto/babyessentials/munecos/", "juguetes", "juguetes-didacticos"),
+    # Textiles / Ropa
+    (f"{BASE_URL}/categoria-producto/indumentaria/nb-a-24-meses/",  "textiles", "textiles-ropa"),
+    (f"{BASE_URL}/categoria-producto/indumentaria/primera-muda/",   "textiles", "textiles-ropa"),
+    (f"{BASE_URL}/categoria-producto/pijamas/",                     "textiles", "textiles-ropa"),
+    (f"{BASE_URL}/categoria-producto/indumentaria/bebes/",          "textiles", "textiles-ropa"),
+    (f"{BASE_URL}/categoria-producto/indumentaria/beba/",           "textiles", "textiles-ropa"),
+    (f"{BASE_URL}/categoria-producto/indumentaria/bebe/",           "textiles", "textiles-ropa"),
+    (f"{BASE_URL}/categoria-producto/baby-alpaca/",                 "textiles", "textiles-ropa"),
 ]
 
 

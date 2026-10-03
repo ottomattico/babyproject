@@ -10,13 +10,39 @@ BASE_URL = "https://www.chicco.com.uy"
 
 # (url, category, subcategory)
 PAGES = [
+    # Movilidad - Coches
+    (f"{BASE_URL}/catalogo/de-paseo/coches-travel-system/",     "movilidad",     "movilidad-coches-ts"),
+    (f"{BASE_URL}/catalogo/de-paseo/coches-ultralivianos/",     "movilidad",     "movilidad-coches-paseo"),
+    (f"{BASE_URL}/catalogo/de-paseo/coches-de-mellizos/",       "movilidad",     "movilidad-coches-doble"),
+    (f"{BASE_URL}/catalogo/de-paseo/porta-bebes/",              "movilidad",     "movilidad-porteo"),
+    # Movilidad - Sillas de auto
+    (f"{BASE_URL}/catalogo/de-viaje/sillas-de-auto/",           "movilidad",     "movilidad-auto-butaca"),
+    # Descanso
     (f"{BASE_URL}/catalogo/descanso/practicunas/",              "descanso",      "descanso-practicunas"),
-    (f"{BASE_URL}/catalogo/de-viaje/sillas-de-auto/",           "movilidad",     "movilidad-auto"),
-    (f"{BASE_URL}/catalogo/de-paseo/",                          "movilidad",     "movilidad-coches"),
+    # Estimulación
+    (f"{BASE_URL}/catalogo/descanso/columpios-y-mecedoras/",    "estimulacion",  "estim-mecedoras"),
+    (f"{BASE_URL}/catalogo/descanso/mordillos/",                "estimulacion",  "estim-mordillos"),
+    (f"{BASE_URL}/catalogo/juego/alfombras-y-gimnasios/",       "estimulacion",  "estim-gimnasios"),
+    (f"{BASE_URL}/catalogo/juego/juguetes-para-la-cuna/",       "estimulacion",  "estim-moviles"),
+    (f"{BASE_URL}/catalogo/juego/sonajeros/",                   "estimulacion",  "estim-mordillos"),
+    (f"{BASE_URL}/catalogo/juego/primeras-actividades/",        "estimulacion",  "estim-mordillos"),
+    (f"{BASE_URL}/catalogo/juego/juguetes-musicales/",          "estimulacion",  "estim-moviles"),
+    # Sobre ruedas
+    (f"{BASE_URL}/catalogo/juego/vehiculos/",                   "ruedas",        "ruedas-electricos"),
+    # Alimentación
     (f"{BASE_URL}/catalogo/alimentacion/sillas-de-comer/",      "alimentacion",  "alim-sillas"),
+    (f"{BASE_URL}/catalogo/alimentacion/vasos/",                "alimentacion",  "alim-vajilla-vasos"),
+    (f"{BASE_URL}/catalogo/alimentacion/platos-cubiertos-y-accesorios/", "alimentacion", "alim-vajilla-platos"),
+    # Lactancia
     (f"{BASE_URL}/catalogo/lactancia/extractores-de-leche/",    "alimentacion",  "alim-lactancia-extra"),
     (f"{BASE_URL}/catalogo/lactancia/biberones-y-tetinas/",     "alimentacion",  "alim-lactancia-biber"),
-    (f"{BASE_URL}/catalogo/juego/",                             "juguetes",      "juguetes-0-12"),
+    (f"{BASE_URL}/catalogo/lactancia/calienta-biberones-y-esterilizadores/", "alimentacion", "alim-lactancia-esteri"),
+    (f"{BASE_URL}/catalogo/lactancia/accesorios-para-lactancia/", "alimentacion", "alim-lactancia"),
+    # Baño
+    (f"{BASE_URL}/catalogo/bano/cambiadores-y-banitos/",        "bano",          "bano-baneras"),
+    (f"{BASE_URL}/catalogo/bano/higiene/",                      "bano",          "bano-higiene"),
+    # Seguridad
+    (f"{BASE_URL}/catalogo/cuidado/seguridad/",                 "seguridad",     "seguridad-portones"),
 ]
 
 
