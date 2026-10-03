@@ -2,6 +2,7 @@ import { getProducts, getCategories, toPesos } from "@/lib/products";
 import { getUsdToUyu } from "@/lib/exchange";
 import ProductCard from "@/app/components/ProductCard";
 import StoreFilter from "@/app/components/StoreFilter";
+import BankFilter from "@/app/components/BankFilter";
 import SortFilter from "@/app/components/SortFilter";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
@@ -11,10 +12,10 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ store?: string; orden?: string }>;
+  searchParams: Promise<{ store?: string; orden?: string; banco?: string }>;
 }) {
   const { slug } = await params;
-  const { store, orden } = await searchParams;
+  const { store, orden, banco } = await searchParams;
 
   const [categories, usdRate] = await Promise.all([getCategories(), getUsdToUyu()]);
   const allProducts = await getProducts(slug, categories);
@@ -22,8 +23,12 @@ export default async function CategoryPage({
   const cat = categories.find((c) => c.id === slug);
   if (!cat) notFound();
 
-  let products = store ? allProducts.filter((p) => p.store === store) : allProducts;
+  let products = allProducts;
+  if (store) products = products.filter((p) => p.store === store);
+  if (banco) products = products.filter((p) => p.card_bank === banco);
+
   const stores = [...new Set(allProducts.map((p) => p.store))].sort();
+  const banks = [...new Set(allProducts.map((p) => p.card_bank).filter(Boolean))].sort() as string[];
 
   if (orden === "precio-asc") {
     products = [...products].sort((a, b) => toPesos(a.price, a.currency, usdRate) - toPesos(b.price, b.currency, usdRate));
@@ -43,8 +48,15 @@ export default async function CategoryPage({
       </div>
 
       <Suspense>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-8 pb-6 border-b border-[#E2EDE8]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-2 mb-8 pb-6 border-b border-[#E2EDE8]">
           {stores.length > 1 && <StoreFilter stores={stores} />}
+          {banks.length > 0 && (
+            <>
+              <span className="text-[#E2EDE8] font-bold">|</span>
+              <BankFilter banks={banks} />
+            </>
+          )}
+          <span className="text-[#E2EDE8] font-bold">|</span>
           <SortFilter />
         </div>
       </Suspense>
