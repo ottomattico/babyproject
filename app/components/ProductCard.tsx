@@ -38,7 +38,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
       href={product.product_url}
       target="_blank"
       rel="noopener noreferrer"
-      className="group flex flex-col"
+      className="group flex flex-col rounded-2xl border border-[#E2EDE8] overflow-hidden hover:border-[#72C5A2] hover:shadow-sm transition-all duration-200"
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-[#EFECE5]">
@@ -57,7 +57,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
       </div>
 
       {/* Info */}
-      <div className="pt-3 flex flex-col gap-1">
+      <div className="pt-3 px-3 pb-3 flex flex-col gap-1">
         <span className="inline-block text-[10px] font-bold text-[#72C5A2] uppercase tracking-[0.1em] bg-[#F0FAF5] px-2 py-0.5 rounded-full w-fit">
           {product.store}
         </span>
