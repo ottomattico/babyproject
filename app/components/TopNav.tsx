@@ -8,6 +8,7 @@ type CategoryWithChildren = Category & { children: (Category & { children: Categ
 
 export default function TopNav({ tree }: { tree: CategoryWithChildren[] }) {
   const [open, setOpen] = useState<string | null>(null);
+  const activeParent = tree.find((p) => p.id === open);
 
   return (
     <nav
@@ -30,29 +31,27 @@ export default function TopNav({ tree }: { tree: CategoryWithChildren[] }) {
         ))}
       </div>
 
-      {/* Dropdown panel */}
-      {open && (() => {
-        const parent = tree.find((p) => p.id === open);
-        if (!parent) return null;
-        return (
-          <div className="absolute left-0 right-0 bg-white border-b border-[#E2EDE8] shadow-md z-20">
-            <div className="max-w-7xl mx-auto px-6 py-5">
-              <div className="flex flex-wrap gap-2">
-                {parent.children.map((child) => (
-                  <Link
-                    key={child.id}
-                    href={`/categoria/${child.id}`}
-                    onClick={() => setOpen(null)}
-                    className="px-4 py-1.5 rounded-full text-sm font-semibold bg-[#F0FAF5] hover:bg-[#72C5A2] hover:text-white text-[#1A1A1A] transition-colors"
-                  >
-                    {child.label}
-                  </Link>
-                ))}
-              </div>
-            </div>
+      {/* Dropdown panel — always rendered, animated with CSS */}
+      <div
+        className={`absolute left-0 right-0 bg-white border-b border-[#E2EDE8] shadow-md z-20 overflow-hidden transition-all duration-200 ease-out ${
+          open ? "opacity-100 translate-y-0 pointer-events-auto" : "opacity-0 -translate-y-2 pointer-events-none"
+        }`}
+      >
+        <div className="max-w-7xl mx-auto px-6 py-5">
+          <div className="flex flex-wrap gap-2">
+            {activeParent?.children.map((child) => (
+              <Link
+                key={child.id}
+                href={`/categoria/${child.id}`}
+                onClick={() => setOpen(null)}
+                className="px-4 py-1.5 rounded-full text-sm font-semibold bg-[#F0FAF5] hover:bg-[#72C5A2] hover:text-white text-[#1A1A1A] transition-colors"
+              >
+                {child.label}
+              </Link>
+            ))}
           </div>
-        );
-      })()}
+        </div>
+      </div>
     </nav>
   );
 }
