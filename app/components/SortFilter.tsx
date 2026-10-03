@@ -32,8 +32,8 @@ export default function SortFilter() {
           onClick={() => select(o.value)}
           className={`px-3 py-1 rounded-full text-sm border transition-colors ${
             active === o.value
-              ? "bg-gray-900 border-gray-900 text-white"
-              : "bg-white border-gray-200 text-gray-600 hover:border-gray-400"
+              ? "bg-[#0F0F0F] border-[#0F0F0F] text-white"
+              : "bg-white border-[#E4E0D8] text-[#0F0F0F] hover:border-[#0F0F0F]"
           }`}
         >
           {o.label}

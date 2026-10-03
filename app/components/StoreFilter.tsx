@@ -27,8 +27,8 @@ export default function StoreFilter({ stores }: { stores: string[] }) {
           onClick={() => select(s)}
           className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
             active === s
-              ? "bg-rose-500 border-rose-500 text-white"
-              : "bg-white border-gray-200 text-gray-600 hover:border-rose-300"
+              ? "bg-[#FF4D2E] border-[#FF4D2E] text-white"
+              : "bg-white border-[#E4E0D8] text-[#0F0F0F] hover:border-[#FF4D2E]"
           }`}
         >
           {s === "todas" ? "Todas las tiendas" : s}
