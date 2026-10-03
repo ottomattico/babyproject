@@ -57,10 +57,12 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
       </div>
 
       {/* Info */}
-      <div className="pt-3 px-3 pb-3 flex flex-col gap-1">
-        <span className="inline-block text-[10px] font-bold text-[#72C5A2] uppercase tracking-[0.1em] bg-[#F0FAF5] px-2 py-0.5 rounded-full w-fit">
+      <div className="bg-[#F0FAF5] px-3 py-1.5">
+        <span className="text-[10px] font-bold text-[#72C5A2] uppercase tracking-[0.1em]">
           {product.store}
         </span>
+      </div>
+      <div className="px-3 pt-2 pb-3 flex flex-col gap-1">
 
         <h2 className="text-[13px] text-[#1A1A1A] line-clamp-2 leading-[1.4]">
           {product.name}
