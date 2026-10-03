@@ -74,9 +74,9 @@ export default function AddToListButton({ productId, productStore }: Props) {
   }
 
   return (
-    <div ref={ref} className="relative" onClick={(e) => e.preventDefault()}>
+    <div ref={ref} className="relative">
       <button
-        onClick={handleOpen}
+        onClick={(e) => { e.preventDefault(); e.stopPropagation(); handleOpen(); }}
         className={`text-[11px] font-semibold transition-colors ${
           added.size > 0
             ? "text-[#E87A5C]"
@@ -104,7 +104,7 @@ export default function AddToListButton({ productId, productStore }: Props) {
               {lists.map((list) => (
                 <button
                   key={list.id}
-                  onClick={() => toggle(list.id)}
+                  onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(list.id); }}
                   className={`w-full text-left text-sm px-2 py-1.5 rounded-lg transition-colors flex items-center gap-2 ${
                     added.has(list.id)
                       ? "text-[#72C5A2] font-semibold"
