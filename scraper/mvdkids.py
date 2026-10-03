@@ -157,8 +157,11 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
                 card_price = int(digits) if digits else None
 
         img_el = await card.query_selector("a.img img")
-        img_src = await img_el.get_attribute("src") if img_el else ""
-        img_alt = await img_el.get_attribute("alt") if img_el else name
+        img_src = ""
+        img_alt = name
+        if img_el:
+            img_alt = await img_el.get_attribute("alt") or name
+            img_src = await img_el.get_attribute("data-src") or await img_el.get_attribute("src") or ""
         if img_src.startswith("//"):
             img_src = "https:" + img_src
 
