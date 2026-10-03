@@ -57,7 +57,12 @@ export default function ProductCard({ product }: { product: Product }) {
           </span>
           {cardPriceDisplay && (
             <div className="flex items-center gap-1.5 mt-1">
-              <span className="text-xs text-gray-500">{product.card_bank}</span>
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <img
+                src={`/banks/${product.card_bank?.toLowerCase()}.png`}
+                alt={product.card_bank ?? ""}
+                className="h-4 object-contain"
+              />
               <span className="text-sm font-semibold text-rose-600">{cardPriceDisplay}</span>
             </div>
           )}
