@@ -48,13 +48,13 @@ export default function ProductCard({ product }: { product: Product }) {
             -{discountPct}%
           </span>
         )}
-        <span className="absolute bottom-2.5 left-2.5 bg-white/90 text-[#0F0F0F] text-[10px] font-semibold px-2 py-0.5 rounded-full uppercase tracking-wide">
-          {product.store}
-        </span>
       </div>
 
       {/* Info */}
       <div className="p-3 flex flex-col gap-1 flex-1">
+        <span className="text-[10px] font-semibold text-[#6B6B6B] uppercase tracking-widest">
+          {product.store}
+        </span>
         <h2 className="text-sm font-medium text-[#0F0F0F] line-clamp-2 leading-snug">
           {product.name}
         </h2>
