@@ -8,7 +8,12 @@ function formatPrice(amount: number | null, currency: string): string {
   return `$ ${amount.toLocaleString("es-UY")}`;
 }
 
-export default function ProductCard({ product }: { product: Product }) {
+function formatPesos(amount: number | null, currency: string, usdRate: number): string | null {
+  if (amount === null || currency !== "USD") return null;
+  return `aprox. $ ${Math.round(amount * usdRate).toLocaleString("es-UY")}`;
+}
+
+export default function ProductCard({ product, usdRate = 43 }: { product: Product; usdRate?: number }) {
   const hasDiscount =
     product.original_price && product.price && product.original_price > product.price;
 
@@ -17,6 +22,7 @@ export default function ProductCard({ product }: { product: Product }) {
     : null;
 
   const priceDisplay = formatPrice(product.price, product.currency);
+  const pesosDisplay = formatPesos(product.price, product.currency, usdRate);
   const originalDisplay = hasDiscount ? formatPrice(product.original_price, product.currency) : null;
   const cardPriceDisplay = product.card_bank && product.card_price
     ? formatPrice(product.card_price, product.currency)
@@ -73,6 +79,9 @@ export default function ProductCard({ product }: { product: Product }) {
               <span className="text-[11px] text-[#FF4D2E]">−{discountPct}%</span>
             )}
           </div>
+          {pesosDisplay && (
+            <span className="text-[11px] text-[#B8B0A4]">{pesosDisplay}</span>
+          )}
 
           {/* Bank price row */}
           {cardPriceDisplay && (

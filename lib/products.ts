@@ -1,5 +1,10 @@
 import { supabase } from "./supabase";
 
+export function toPesos(price: number | null, currency: string, usdRate: number): number {
+  if (price === null) return Infinity;
+  return currency === "USD" ? price * usdRate : price;
+}
+
 export type Product = {
   uid: string;
   id: string;

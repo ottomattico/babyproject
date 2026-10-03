@@ -1,4 +1,5 @@
-import { getProducts, getCategories } from "@/lib/products";
+import { getProducts, getCategories, toPesos } from "@/lib/products";
+import { getUsdToUyu } from "@/lib/exchange";
 import ProductCard from "@/app/components/ProductCard";
 import StoreFilter from "@/app/components/StoreFilter";
 import SortFilter from "@/app/components/SortFilter";
@@ -15,7 +16,7 @@ export default async function CategoryPage({
   const { slug } = await params;
   const { store, orden } = await searchParams;
 
-  const categories = await getCategories();
+  const [categories, usdRate] = await Promise.all([getCategories(), getUsdToUyu()]);
   const allProducts = await getProducts(slug, categories);
 
   const cat = categories.find((c) => c.id === slug);
@@ -25,9 +26,9 @@ export default async function CategoryPage({
   const stores = [...new Set(allProducts.map((p) => p.store))].sort();
 
   if (orden === "precio-asc") {
-    products = [...products].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+    products = [...products].sort((a, b) => toPesos(a.price, a.currency, usdRate) - toPesos(b.price, b.currency, usdRate));
   } else if (orden === "precio-desc") {
-    products = [...products].sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+    products = [...products].sort((a, b) => toPesos(b.price, b.currency, usdRate) - toPesos(a.price, a.currency, usdRate));
   }
 
   return (
@@ -51,7 +52,7 @@ export default async function CategoryPage({
       {products.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
           {products.map((product) => (
-            <ProductCard key={`${product.store}-${product.id}`} product={product} />
+            <ProductCard key={`${product.store}-${product.id}`} product={product} usdRate={usdRate} />
           ))}
         </div>
       ) : (
