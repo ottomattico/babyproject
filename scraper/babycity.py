@@ -125,16 +125,17 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             bp_raw = (await bank_text_el.inner_text()).strip()
             card_price, _, _ = parse_price(bp_raw)
 
-        # Try firstImg, fallback to secondImg, then any product img
-        img_el = await card.query_selector("img.firstImg") or await card.query_selector("img.secondImg")
-        img_src = await img_el.get_attribute("src") if img_el else ""
-        img_alt = await img_el.get_attribute("alt") if img_el else name
-        # Skip if it looks like a video thumbnail (no extension or .mp4)
-        if img_src and (img_src.endswith(".mp4") or "/video/" in img_src):
-            img_el2 = await card.query_selector("img.secondImg")
-            if img_el2:
-                img_src = await img_el2.get_attribute("src") or img_src
-                img_alt = await img_el2.get_attribute("alt") or img_alt
+        # Find first valid image (skip video thumbnails)
+        img_src, img_alt = "", name
+        for img_el in await card.query_selector_all("img"):
+            src = await img_el.get_attribute("src") or ""
+            if not src:
+                continue
+            if any(x in src.lower() for x in [".mp4", "/video/", "video-thumb"]):
+                continue
+            img_src = src
+            img_alt = await img_el.get_attribute("alt") or name
+            break
 
         slug = href.rstrip("/").split("/")[-1] if href else name.lower().replace(" ", "-")
         full_url = f"{BASE_URL}{href}" if href.startswith("/") else href
