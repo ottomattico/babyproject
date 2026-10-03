@@ -78,6 +78,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "price_text": price_text,
             "original_price": clean_price(original_text) if original_text else None,
             "original_price_text": original_text or None,
+            "currency": "UYU",
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": f"{BASE_URL}{href}" if href else "",

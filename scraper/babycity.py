@@ -80,7 +80,11 @@ def parse_price(text: str) -> tuple[int | None, str]:
     if "," in text:
         text = text.split(",")[0]
     digits = re.sub(r"[^0-9]", "", text)
-    return (int(digits) if digits else None), text.strip()
+    price = int(digits) if digits else None
+    # Sanity check: cap at 10M UYU to avoid parsing garbage
+    if price and price > 10_000_000:
+        price = None
+    return price, text.strip()
 
 
 async def scrape_page(page, url: str, category: str, subcategory: str) -> list[dict]:
@@ -119,6 +123,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "price_text": price_text,
             "original_price": None,
             "original_price_text": None,
+            "currency": "UYU",
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": full_url,

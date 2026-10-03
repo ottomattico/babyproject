@@ -1,5 +1,13 @@
 import { Product } from "@/lib/products";
 
+function formatPrice(amount: number | null, currency: string): string {
+  if (amount === null) return "";
+  if (currency === "USD") {
+    return `U$S ${amount.toLocaleString("es-UY")}`;
+  }
+  return `$ ${amount.toLocaleString("es-UY")}`;
+}
+
 export default function ProductCard({ product }: { product: Product }) {
   const hasDiscount =
     product.original_price && product.price && product.original_price > product.price;
@@ -7,6 +15,9 @@ export default function ProductCard({ product }: { product: Product }) {
   const discountPercent = hasDiscount
     ? Math.round((1 - product.price! / product.original_price!) * 100)
     : null;
+
+  const priceDisplay = formatPrice(product.price, product.currency);
+  const originalDisplay = hasDiscount ? formatPrice(product.original_price, product.currency) : null;
 
   return (
     <a
@@ -44,11 +55,11 @@ export default function ProductCard({ product }: { product: Product }) {
         </h2>
 
         <div className="mt-auto pt-3 flex items-baseline gap-2">
-          <span className="text-lg font-bold text-gray-900">{product.price_text}</span>
-          {product.original_price_text && (
-            <span className="text-sm text-gray-400 line-through">
-              {product.original_price_text}
-            </span>
+          <span className="text-lg font-bold text-gray-900">
+            {priceDisplay || product.price_text}
+          </span>
+          {originalDisplay && (
+            <span className="text-sm text-gray-400 line-through">{originalDisplay}</span>
           )}
         </div>
       </div>

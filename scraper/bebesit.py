@@ -56,14 +56,15 @@ PAGES = [
 ]
 
 
-def parse_price(sim: str, monto: str) -> tuple[int | None, str]:
+def parse_price(sim: str, monto: str) -> tuple[int | None, str, str]:
     sim = sim.strip()
     monto = monto.strip()
     full_text = f"{sim} {monto}"
     if "," in monto:
         monto = monto.split(",")[0]
     digits = re.sub(r"[^0-9]", "", monto)
-    return (int(digits) if digits else None), full_text
+    currency = "USD" if any(x in sim for x in ("U$S", "US$", "USD")) else "UYU"
+    return (int(digits) if digits else None), full_text, currency
 
 
 async def scrape_page(page, url: str, category: str, subcategory: str) -> list[dict]:
@@ -87,7 +88,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         monto_el = await card.query_selector("strong.precio.venta span.monto")
         sim = (await sim_el.inner_text()).strip() if sim_el else "$"
         monto = (await monto_el.inner_text()).strip() if monto_el else ""
-        price_val, price_text = parse_price(sim, monto)
+        price_val, price_text, currency = parse_price(sim, monto)
 
         orig_sim_el = await card.query_selector("del.precio.lista span.sim")
         orig_monto_el = await card.query_selector("del.precio.lista span.monto")
@@ -95,7 +96,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         if orig_sim_el and orig_monto_el:
             orig_sim = (await orig_sim_el.inner_text()).strip()
             orig_monto = (await orig_monto_el.inner_text()).strip()
-            orig_price_val, orig_price_text = parse_price(orig_sim, orig_monto)
+            orig_price_val, orig_price_text, _ = parse_price(orig_sim, orig_monto)
 
         img_el = await card.query_selector("a.img > img")
         img_src = await img_el.get_attribute("src") if img_el else ""
@@ -113,6 +114,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "price_text": price_text,
             "original_price": orig_price_val,
             "original_price_text": orig_price_text,
+            "currency": currency,
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": href or "",

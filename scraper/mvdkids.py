@@ -157,6 +157,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "price_text": price_text,
             "original_price": None,
             "original_price_text": None,
+            "currency": "UYU",
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": href or "",

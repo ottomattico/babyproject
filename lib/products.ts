@@ -9,6 +9,7 @@ export type Product = {
   price_text: string;
   original_price: number | null;
   original_price_text: string | null;
+  currency: string;
   image_url: string;
   image_alt: string;
   product_url: string;
