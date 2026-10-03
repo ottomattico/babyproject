@@ -1,6 +1,7 @@
 import { getProducts, getCategories } from "@/lib/products";
 import ProductCard from "@/app/components/ProductCard";
 import StoreFilter from "@/app/components/StoreFilter";
+import SortFilter from "@/app/components/SortFilter";
 import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
@@ -9,10 +10,10 @@ export default async function CategoryPage({
   searchParams,
 }: {
   params: Promise<{ slug: string }>;
-  searchParams: Promise<{ store?: string }>;
+  searchParams: Promise<{ store?: string; orden?: string }>;
 }) {
   const { slug } = await params;
-  const { store } = await searchParams;
+  const { store, orden } = await searchParams;
 
   const [categories, allProducts] = await Promise.all([
     getCategories(),
@@ -22,8 +23,14 @@ export default async function CategoryPage({
   const cat = categories.find((c) => c.id === slug);
   if (!cat) notFound();
 
-  const products = store ? allProducts.filter((p) => p.store === store) : allProducts;
+  let products = store ? allProducts.filter((p) => p.store === store) : allProducts;
   const stores = [...new Set(allProducts.map((p) => p.store))].sort();
+
+  if (orden === "precio-asc") {
+    products = [...products].sort((a, b) => (a.price ?? Infinity) - (b.price ?? Infinity));
+  } else if (orden === "precio-desc") {
+    products = [...products].sort((a, b) => (b.price ?? -Infinity) - (a.price ?? -Infinity));
+  }
 
   return (
     <div>
@@ -36,11 +43,12 @@ export default async function CategoryPage({
         </p>
       </div>
 
-      {stores.length > 1 && (
-        <Suspense>
-          <StoreFilter stores={stores} />
-        </Suspense>
-      )}
+      <Suspense>
+        <div className="flex flex-wrap gap-x-6 gap-y-2">
+          {stores.length > 1 && <StoreFilter stores={stores} />}
+          <SortFilter />
+        </div>
+      </Suspense>
 
       {products.length > 0 ? (
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
