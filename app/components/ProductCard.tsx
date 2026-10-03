@@ -104,6 +104,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
             month: "short",
             hour: "2-digit",
             minute: "2-digit",
+            timeZone: "America/Montevideo",
           })}
         </p>
       </div>
