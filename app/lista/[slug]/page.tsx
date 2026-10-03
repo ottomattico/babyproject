@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase-server";
 import { notFound } from "next/navigation";
 import ClaimButton from "./ClaimButton";
 import RemoveItemButton from "./RemoveItemButton";
+import CopyButton from "@/app/mis-listas/CopyButton";
 
 export default async function ListaPage({
   params,
@@ -56,13 +57,7 @@ export default async function ListaPage({
           <span className="text-sm text-[#8E9FA0]">
             {pending.length} pendientes · {claimed.length} elegidos
           </span>
-          <button
-            onClick={() => {}}
-            className="text-xs text-[#72C5A2] font-semibold border border-[#72C5A2] rounded-full px-3 py-1 hover:bg-[#72C5A2] hover:text-white transition-colors"
-            id="copy-btn"
-          >
-            Compartir link
-          </button>
+          <CopyButton slug={list.slug} />
         </div>
       </div>
 
