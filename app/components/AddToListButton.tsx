@@ -77,12 +77,13 @@ export default function AddToListButton({ productId, productStore }: Props) {
     <div ref={ref} className="relative" onClick={(e) => e.preventDefault()}>
       <button
         onClick={handleOpen}
-        title="Agregar a lista"
-        className="w-7 h-7 flex items-center justify-center rounded-full bg-white/80 hover:bg-white border border-[#E2EDE8] hover:border-[#72C5A2] transition-all shadow-sm"
+        className={`text-[11px] font-semibold transition-colors ${
+          added.size > 0
+            ? "text-[#E87A5C]"
+            : "text-[#72C5A2] hover:text-[#5aad8a]"
+        }`}
       >
-        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-3.5 h-3.5 transition-colors ${added.size > 0 ? "fill-[#E87A5C]" : "fill-[#8E9FA0]"}`}>
-          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-        </svg>
+        {added.size > 0 ? "✓ En tu lista" : "+ Agregar a lista"}
       </button>
 
       {open && (

@@ -43,9 +43,6 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-[#EFECE5]">
-        <div className="absolute top-2 right-2 z-10">
-          <AddToListButton productId={product.id} productStore={product.store} />
-        </div>
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -102,7 +99,10 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
             </div>
           )}
         </div>
-        <p className="text-[10px] text-[#B8B0A4] mt-auto pt-2">
+        <div className="mt-auto pt-2 border-t border-[#E2EDE8]">
+          <AddToListButton productId={product.id} productStore={product.store} />
+        </div>
+        <p className="text-[10px] text-[#B8B0A4] pt-1.5">
           Actualizado {new Date(product.scraped_at).toLocaleString("es-UY", {
             day: "numeric",
             month: "short",
