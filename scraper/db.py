@@ -19,7 +19,11 @@ def upsert_products(products: list[dict]) -> int:
     if not products:
         return 0
     db = get_client()
-    # Remove uid if present (let DB generate it)
-    rows = [{k: v for k, v in p.items() if k != "uid"} for p in products]
+    # Remove uid, deduplicate by (store, id) keeping last occurrence
+    seen = {}
+    for p in products:
+        key = (p.get("store"), p.get("id"))
+        seen[key] = {k: v for k, v in p.items() if k != "uid"}
+    rows = list(seen.values())
     result = db.table("products").upsert(rows, on_conflict="store,id").execute()
     return len(result.data)
