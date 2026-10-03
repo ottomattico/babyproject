@@ -12,12 +12,11 @@ export default function ProductCard({ product }: { product: Product }) {
   const hasDiscount =
     product.original_price && product.price && product.original_price > product.price;
 
-  const discountPercent = hasDiscount
-    ? Math.round((1 - product.price! / product.original_price!) * 100)
-    : null;
-
   const priceDisplay = formatPrice(product.price, product.currency);
   const originalDisplay = hasDiscount ? formatPrice(product.original_price, product.currency) : null;
+  const cardPriceDisplay = product.card_bank && product.card_price
+    ? formatPrice(product.card_price, product.currency)
+    : null;
 
   return (
     <a
@@ -40,11 +39,6 @@ export default function ProductCard({ product }: { product: Product }) {
             ?
           </div>
         )}
-        {discountPercent && (
-          <span className="absolute top-2 left-2 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-full">
-            -{discountPercent}%
-          </span>
-        )}
       </div>
 
       {/* Info */}
@@ -54,27 +48,22 @@ export default function ProductCard({ product }: { product: Product }) {
           {product.name}
         </h2>
 
-        <div className="mt-auto pt-3 flex items-baseline gap-2">
+        <div className="mt-auto pt-3 flex flex-col gap-0.5">
+          {originalDisplay && (
+            <span className="text-xs text-gray-400 line-through">{originalDisplay}</span>
+          )}
           <span className="text-lg font-bold text-gray-900">
             {priceDisplay || product.price_text}
           </span>
-          {originalDisplay && (
-            <span className="text-sm text-gray-400 line-through">{originalDisplay}</span>
+          {cardPriceDisplay && (
+            <div className="flex items-center gap-1.5 mt-1">
+              <span className="text-xs text-gray-500">{product.card_bank}</span>
+              <span className="text-sm font-semibold text-rose-600">{cardPriceDisplay}</span>
+            </div>
           )}
         </div>
 
-        {product.card_bank && product.card_price && (
-          <div className="mt-2 flex items-center gap-1.5 bg-blue-50 rounded-lg px-2 py-1">
-            <span className="text-xs text-blue-700 font-medium">
-              {product.card_bank} {product.card_discount_pct}%
-            </span>
-            <span className="text-xs text-blue-900 font-bold">
-              {formatPrice(product.card_price, product.currency)}
-            </span>
-          </div>
-        )}
-
-        <p className="text-xs text-gray-300 mt-1">
+        <p className="text-xs text-gray-300 mt-2">
           * Actualizado el{" "}
           {new Date(product.scraped_at).toLocaleDateString("es-UY", {
             day: "numeric",
