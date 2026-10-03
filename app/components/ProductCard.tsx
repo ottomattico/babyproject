@@ -98,6 +98,14 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
             </div>
           )}
         </div>
+        <p className="text-[10px] text-[#B8B0A4] mt-2">
+          Actualizado {new Date(product.scraped_at).toLocaleString("es-UY", {
+            day: "numeric",
+            month: "short",
+            hour: "2-digit",
+            minute: "2-digit",
+          })}
+        </p>
       </div>
     </a>
   );
