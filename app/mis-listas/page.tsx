@@ -2,6 +2,7 @@ import { createClient } from "@/lib/supabase-server";
 import { redirect } from "next/navigation";
 import NewListForm from "./NewListForm";
 import DeleteListButton from "./DeleteListButton";
+import CopyButton from "./CopyButton";
 
 export default async function MisListasPage() {
   const supabase = await createClient();
@@ -38,12 +39,7 @@ export default async function MisListasPage() {
                 </p>
               </div>
               <div className="flex items-center gap-3">
-                <button
-                  onClick={() => navigator.clipboard.writeText(`${location.origin}/lista/${list.slug}`)}
-                  className="text-xs text-[#72C5A2] font-semibold border border-[#72C5A2] rounded-full px-3 py-1 hover:bg-[#72C5A2] hover:text-white transition-colors"
-                >
-                  Copiar link
-                </button>
+                <CopyButton slug={list.slug} />
                 <a
                   href={`/lista/${list.slug}`}
                   className="text-xs font-semibold text-[#8E9FA0] hover:text-[#1A1A1A] transition-colors"

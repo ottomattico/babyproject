@@ -18,6 +18,7 @@ export default function NewListForm() {
   const [name, setName] = useState("");
   const [babyName, setBabyName] = useState("");
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const router = useRouter();
   const supabase = createClient();
 
