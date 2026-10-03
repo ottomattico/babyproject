@@ -22,6 +22,11 @@ export default function ProductCard({ product }: { product: Product }) {
     ? formatPrice(product.card_price, product.currency)
     : null;
 
+  const cardDiscountPct = product.card_discount_pct ??
+    (product.card_price && product.price
+      ? Math.round((1 - product.card_price / product.price) * 100)
+      : null);
+
   return (
     <a
       href={product.product_url}
@@ -76,8 +81,8 @@ export default function ProductCard({ product }: { product: Product }) {
                   className="h-3.5 object-contain"
                 />
                 <span className="text-sm font-semibold text-[#FF4D2E]">{cardPriceDisplay}</span>
-                {product.card_discount_pct && (
-                  <span className="text-xs font-semibold text-[#FF4D2E]">-{product.card_discount_pct}%</span>
+                {cardDiscountPct && (
+                  <span className="text-xs font-semibold text-[#FF4D2E]">-{cardDiscountPct}%</span>
                 )}
               </>
             )}
