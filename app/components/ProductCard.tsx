@@ -79,9 +79,6 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
               <span className="text-[11px] text-[#FF4D2E]">−{discountPct}%</span>
             )}
           </div>
-          {pesosDisplay && (
-            <span className="text-[11px] text-[#B8B0A4]">{pesosDisplay}</span>
-          )}
 
           {/* Bank price row */}
           {cardPriceDisplay && (
