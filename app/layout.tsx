@@ -19,14 +19,14 @@ export default async function RootLayout({
   return (
     <html lang="es">
       <body>
-        <header className="sticky top-0 z-10 bg-white">
-          <div className="border-b border-[#E2EDE8]">
+        <header className="sticky top-0 z-10">
+          <div className="bg-[#72C5A2]">
             <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
               <a href="/">
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo.svg" alt="Mini Klub" className="h-12 w-auto" />
               </a>
-              <p className="text-sm text-[#8E9FA0] hidden sm:block font-medium">
+              <p className="text-sm text-white/80 hidden sm:block font-semibold">
                 Compará precios en Uruguay
               </p>
             </div>
