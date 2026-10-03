@@ -75,16 +75,17 @@ PAGES = [
 ]
 
 
-def parse_price(text: str) -> tuple[int | None, str]:
+def parse_price(text: str) -> tuple[int | None, str, str]:
     text = text.strip().replace("\xa0", " ")
     if "," in text:
         text = text.split(",")[0]
     digits = re.sub(r"[^0-9]", "", text)
     price = int(digits) if digits else None
-    # Sanity check: cap at 10M UYU to avoid parsing garbage
+    # Sanity check: cap at 10M to avoid parsing garbage
     if price and price > 10_000_000:
         price = None
-    return price, text.strip()
+    currency = "USD" if "USD" in text.upper() else "UYU"
+    return price, text.strip(), currency
 
 
 async def scrape_page(page, url: str, category: str, subcategory: str) -> list[dict]:
@@ -104,9 +105,25 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         if not name:
             continue
 
+        old_price_el = await card.query_selector("div.oldPrice")
+        old_price_raw = (await old_price_el.inner_text()).strip() if old_price_el else ""
+        orig_val, orig_text, _ = parse_price(old_price_raw) if old_price_raw else (None, None, "UYU")
+
         price_el = await card.query_selector("div.productViewPrice")
         price_text_raw = (await price_el.inner_text()).strip() if price_el else ""
-        price_val, price_text = parse_price(price_text_raw)
+        # productViewPrice includes oldPrice text, remove it
+        if orig_text:
+            price_text_raw = price_text_raw.replace(old_price_raw, "").strip()
+        price_val, price_text, currency = parse_price(price_text_raw)
+
+        # Bank card discount
+        card_bank, card_price = None, None
+        bank_img_el = await card.query_selector("div.bankPrice img.bankPriceImg")
+        bank_text_el = await card.query_selector("div.bankPriceText")
+        if bank_img_el and bank_text_el:
+            card_bank = await bank_img_el.get_attribute("alt") or None
+            bp_raw = (await bank_text_el.inner_text()).strip()
+            card_price, _, _ = parse_price(bp_raw)
 
         img_el = await card.query_selector("img.firstImg")
         img_src = await img_el.get_attribute("src") if img_el else ""
@@ -121,9 +138,12 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "brand": None,
             "price": price_val,
             "price_text": price_text,
-            "original_price": None,
-            "original_price_text": None,
-            "currency": "UYU",
+            "original_price": orig_val,
+            "original_price_text": orig_text or None,
+            "currency": currency,
+            "card_bank": card_bank,
+            "card_discount_pct": None,
+            "card_price": card_price,
             "image_url": img_src,
             "image_alt": img_alt,
             "product_url": full_url,
