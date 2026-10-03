@@ -43,11 +43,6 @@ export default function ProductCard({ product }: { product: Product }) {
             ?
           </div>
         )}
-        {discountPct && (
-          <span className="absolute top-2.5 left-2.5 bg-[#FF4D2E] text-white text-xs font-bold px-2 py-0.5 rounded-full">
-            -{discountPct}%
-          </span>
-        )}
       </div>
 
       {/* Info */}
@@ -63,9 +58,14 @@ export default function ProductCard({ product }: { product: Product }) {
           <span className="text-xs text-[#6B6B6B] line-through min-h-[1rem]">
             {originalDisplay ?? ""}
           </span>
-          <span className="text-base font-bold text-[#0F0F0F]">
-            {priceDisplay || product.price_text}
-          </span>
+          <div className="flex items-center gap-1.5">
+            <span className="text-base font-bold text-[#0F0F0F]">
+              {priceDisplay || product.price_text}
+            </span>
+            {discountPct && (
+              <span className="text-xs font-semibold text-[#FF4D2E]">-{discountPct}%</span>
+            )}
+          </div>
           <div className="flex items-center gap-1.5 mt-0.5 min-h-[1.25rem]">
             {cardPriceDisplay && (
               <>
@@ -76,6 +76,9 @@ export default function ProductCard({ product }: { product: Product }) {
                   className="h-3.5 object-contain"
                 />
                 <span className="text-sm font-semibold text-[#FF4D2E]">{cardPriceDisplay}</span>
+                {product.card_discount_pct && (
+                  <span className="text-xs font-semibold text-[#FF4D2E]">-{product.card_discount_pct}%</span>
+                )}
               </>
             )}
           </div>
