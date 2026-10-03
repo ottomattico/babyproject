@@ -1,18 +1,19 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
 @import "tailwindcss";
 
 @theme inline {
-  --color-cream: #FAFAF7;
-  --color-ink: #0F0F0F;
-  --color-accent: #FF4D2E;
-  --color-muted: #6B6B6B;
-  --color-border: #E4E0D8;
-  --font-sans: 'Space Grotesk', sans-serif;
+  --color-bg: #FFFFFF;
+  --color-ink: #1A1A1A;
+  --color-mint: #72C5A2;
+  --color-coral: #E87A5C;
+  --color-muted: #8E9FA0;
+  --color-border: #E2EDE8;
+  --font-sans: 'Nunito', sans-serif;
 }
 
 body {
-  background: #FAFAF7;
-  color: #0F0F0F;
-  font-family: 'Space Grotesk', sans-serif;
+  background: #FFFFFF;
+  color: #1A1A1A;
+  font-family: 'Nunito', sans-serif;
   -webkit-font-smoothing: antialiased;
 }

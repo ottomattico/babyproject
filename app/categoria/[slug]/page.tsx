@@ -34,8 +34,8 @@ export default async function CategoryPage({
   return (
     <div>
       <div className="mb-8 pt-2">
-        <h1 className="text-3xl font-medium tracking-tight text-[#1A1A1A]">{cat.label}</h1>
-        <p className="text-sm text-[#B8B0A4] mt-1.5 tracking-wide">
+        <h1 className="text-3xl font-extrabold text-[#1A1A1A]">{cat.label}</h1>
+        <p className="text-sm text-[#8E9FA0] font-medium mt-1.5">
           {allProducts.length > 0
             ? `${products.length} productos · ${stores.length} ${stores.length === 1 ? "tienda" : "tiendas"}`
             : "Sin productos en esta categoría todavía"}
@@ -43,7 +43,7 @@ export default async function CategoryPage({
       </div>
 
       <Suspense>
-        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-8 pb-6 border-b border-[#E8E4DC]">
+        <div className="flex flex-wrap items-center gap-x-6 gap-y-2 mb-8 pb-6 border-b border-[#E2EDE8]">
           {stores.length > 1 && <StoreFilter stores={stores} />}
           <SortFilter />
         </div>

@@ -76,7 +76,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
               <span className="text-[11px] text-[#B8B0A4] line-through">{originalDisplay}</span>
             )}
             {discountPct && (
-              <span className="text-[11px] text-[#FF4D2E]">−{discountPct}%</span>
+              <span className="text-[11px] font-semibold text-[#E87A5C]">−{discountPct}%</span>
             )}
           </div>
 
@@ -89,9 +89,9 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
                 alt={product.card_bank ?? ""}
                 className="h-3 object-contain opacity-70"
               />
-              <span className="text-[11px] text-[#FF4D2E]">{cardPriceDisplay}</span>
+              <span className="text-[11px] font-semibold text-[#E87A5C]">{cardPriceDisplay}</span>
               {cardDiscountPct && (
-                <span className="text-[11px] text-[#FF4D2E]">−{cardDiscountPct}%</span>
+                <span className="text-[11px] font-semibold text-[#E87A5C]">−{cardDiscountPct}%</span>
               )}
             </div>
           )}

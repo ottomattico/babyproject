@@ -25,11 +25,11 @@ export default function SortFilter() {
 
   return (
     <div className="flex items-center gap-2">
-      <span className="text-[12px] text-[#B8B0A4] tracking-wide">Ordenar:</span>
+      <span className="text-[12px] text-[#8E9FA0] font-semibold">Ordenar:</span>
       <select
         value={active}
         onChange={(e) => select(e.target.value)}
-        className="text-[12px] border border-[#D8D4CC] rounded-full px-3 py-1 bg-transparent text-[#6B6460] cursor-pointer focus:outline-none focus:border-[#1A1A1A] focus:text-[#1A1A1A]"
+        className="text-[12px] font-semibold border border-[#E2EDE8] rounded-full px-3 py-1 bg-transparent text-[#8E9FA0] cursor-pointer focus:outline-none focus:border-[#72C5A2] focus:text-[#72C5A2]"
       >
         {OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>
