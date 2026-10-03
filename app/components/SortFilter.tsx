@@ -24,12 +24,12 @@ export default function SortFilter() {
   }
 
   return (
-    <div className="flex items-center gap-2 mb-4">
-      <span className="text-sm text-[#6B6B6B]">Ordenar:</span>
+    <div className="flex items-center gap-2">
+      <span className="text-[12px] text-[#B8B0A4] tracking-wide">Ordenar:</span>
       <select
         value={active}
         onChange={(e) => select(e.target.value)}
-        className="text-sm border border-[#E4E0D8] rounded-full px-3 py-1 bg-white text-[#0F0F0F] cursor-pointer focus:outline-none focus:border-[#0F0F0F]"
+        className="text-[12px] border border-[#D8D4CC] rounded-full px-3 py-1 bg-transparent text-[#6B6460] cursor-pointer focus:outline-none focus:border-[#1A1A1A] focus:text-[#1A1A1A]"
       >
         {OPTIONS.map((o) => (
           <option key={o.value} value={o.value}>

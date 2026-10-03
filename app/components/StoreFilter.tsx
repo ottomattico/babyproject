@@ -20,18 +20,18 @@ export default function StoreFilter({ stores }: { stores: string[] }) {
   const options = ["todas", ...stores];
 
   return (
-    <div className="flex flex-wrap gap-2 mb-6">
+    <div className="flex flex-wrap gap-2">
       {options.map((s) => (
         <button
           key={s}
           onClick={() => select(s)}
-          className={`px-4 py-1.5 rounded-full text-sm border transition-colors ${
+          className={`px-3.5 py-1 rounded-full text-[12px] tracking-wide border transition-colors ${
             active === s
-              ? "bg-[#FF4D2E] border-[#FF4D2E] text-white"
-              : "bg-white border-[#E4E0D8] text-[#0F0F0F] hover:border-[#FF4D2E]"
+              ? "bg-[#1A1A1A] border-[#1A1A1A] text-white"
+              : "bg-transparent border-[#D8D4CC] text-[#6B6460] hover:border-[#1A1A1A] hover:text-[#1A1A1A]"
           }`}
         >
-          {s === "todas" ? "Todas las tiendas" : s}
+          {s === "todas" ? "Todas" : s}
         </button>
       ))}
     </div>
