@@ -111,12 +111,16 @@ async def main():
         page = await browser.new_page()
         for base_url, category, subcategory in PAGES:
             page_num = 1
+            seen_ids: set = set()
             while True:
                 url = base_url if page_num == 1 else f"{base_url.rstrip('/')}/?page={page_num}"
                 products = await scrape_page(page, url, category, subcategory)
-                all_products.extend(products)
-                if not products:
+                new = [p for p in products if p["id"] not in seen_ids]
+                if not new:
                     break
+                for p in new:
+                    seen_ids.add(p["id"])
+                all_products.extend(new)
                 page_num += 1
         await browser.close()
 
