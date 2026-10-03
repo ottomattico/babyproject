@@ -51,7 +51,7 @@ export default async function CategoryPage({
       </Suspense>
 
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-10">
           {products.map((product) => (
             <ProductCard key={`${product.store}-${product.id}`} product={product} />
           ))}

@@ -161,9 +161,15 @@ async def main():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
-        for url, category, subcategory in PAGES:
-            products = await scrape_page(page, url, category, subcategory)
-            all_products.extend(products)
+        for base_url, category, subcategory in PAGES:
+            root = base_url.rsplit("/", 1)[0]
+            page_num = 1
+            while True:
+                products = await scrape_page(page, f"{root}/{page_num}", category, subcategory)
+                all_products.extend(products)
+                if not products:
+                    break
+                page_num += 1
         await browser.close()
 
     if all_products:

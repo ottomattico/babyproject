@@ -116,6 +116,14 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
     print(f"Fetching {url}...")
     await page.goto(url, wait_until="networkidle", timeout=30000)
 
+    # Click "VER MÁS" until it disappears to load all products
+    while True:
+        btn = await page.query_selector("a.btnMas")
+        if not btn:
+            break
+        await btn.click()
+        await page.wait_for_load_state("networkidle", timeout=10000)
+
     cards = await page.query_selector_all("div.cnt:has(a.img)")
     print(f"  Found {len(cards)} cards")
 
