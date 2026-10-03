@@ -14,13 +14,24 @@ export default function AddToListButton({ productId, productStore }: Props) {
   const [lists, setLists] = useState<{ id: string; name: string }[]>([]);
   const [added, setAdded] = useState<Set<string>>(new Set());
   const [loggedIn, setLoggedIn] = useState(false);
-  const [loading, setLoading] = useState(false);
+  const [ready, setReady] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
   const supabase = createClient();
   const router = useRouter();
 
+  // Preload user + lists on mount so the dropdown opens instantly
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => setLoggedIn(!!data.user));
+    supabase.auth.getUser().then(async ({ data }) => {
+      if (!data.user) { setReady(true); return; }
+      setLoggedIn(true);
+      const [{ data: userLists }, { data: existing }] = await Promise.all([
+        supabase.from("lists").select("id, name").eq("user_id", data.user.id).order("created_at", { ascending: false }),
+        supabase.from("list_items").select("list_id").eq("product_id", productId).eq("product_store", productStore),
+      ]);
+      setLists(userLists ?? []);
+      setAdded(new Set(existing?.map((e) => e.list_id) ?? []));
+      setReady(true);
+    });
   }, []);
 
   useEffect(() => {
@@ -33,31 +44,12 @@ export default function AddToListButton({ productId, productStore }: Props) {
 
   async function handleOpen() {
     if (!loggedIn) {
-      const supabase = createClient();
       await supabase.auth.signInWithOAuth({
         provider: "google",
         options: { redirectTo: `${location.origin}/auth/callback` },
       });
       return;
     }
-    setLoading(true);
-    const { data: { user } } = await supabase.auth.getUser();
-    const { data: userLists } = await supabase
-      .from("lists")
-      .select("id, name")
-      .eq("user_id", user!.id)
-      .order("created_at", { ascending: false });
-
-    // Check which lists already have this product
-    const { data: existing } = await supabase
-      .from("list_items")
-      .select("list_id")
-      .eq("product_id", productId)
-      .eq("product_store", productStore);
-
-    setAdded(new Set(existing?.map((e) => e.list_id) ?? []));
-    setLists(userLists ?? []);
-    setLoading(false);
     setOpen(true);
   }
 
@@ -88,13 +80,9 @@ export default function AddToListButton({ productId, productStore }: Props) {
         title="Agregar a lista"
         className="w-7 h-7 flex items-center justify-center rounded-full bg-white/80 hover:bg-white border border-[#E2EDE8] hover:border-[#72C5A2] transition-all shadow-sm"
       >
-        {loading ? (
-          <span className="text-[10px] text-[#8E9FA0]">...</span>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-[#8E9FA0]">
-            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
-          </svg>
-        )}
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className={`w-3.5 h-3.5 transition-colors ${added.size > 0 ? "fill-[#E87A5C]" : "fill-[#8E9FA0]"}`}>
+          <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+        </svg>
       </button>
 
       {open && (
