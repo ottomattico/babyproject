@@ -82,7 +82,7 @@ export default function AddToListButton({ productId, productStore }: Props) {
   }
 
   return (
-    <div ref={ref} className="relative">
+    <div ref={ref} className="relative" onClick={(e) => e.preventDefault()}>
       <button
         onClick={handleOpen}
         title="Agregar a lista"

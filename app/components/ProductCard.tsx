@@ -43,7 +43,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-[#EFECE5]">
-        <div className="absolute top-2 right-2 z-10" onClick={(e) => e.preventDefault()}>
+        <div className="absolute top-2 right-2 z-10">
           <AddToListButton productId={product.id} productStore={product.store} />
         </div>
         {product.image_url ? (
