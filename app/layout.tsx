@@ -4,7 +4,7 @@ import { getCategories, buildTree, Category } from "@/lib/products";
 import TopNav from "./components/TopNav";
 
 export const metadata: Metadata = {
-  title: "bebeuy — Compará precios de artículos de bebé en Uruguay",
+  title: "Mini Klub — Compará precios de artículos de bebé en Uruguay",
   description: "Compará precios de artículos de bebé en las mejores tiendas de Uruguay",
 };
 
@@ -23,7 +23,7 @@ export default async function RootLayout({
           <div className="border-b border-[#E4E0D8]">
             <div className="max-w-7xl mx-auto px-6 h-14 flex items-center justify-between">
               <a href="/" className="text-xl font-bold tracking-tight">
-                bebe<span className="text-[#FF4D2E]">uy</span>
+                mini<span className="text-[#FF4D2E]">klub</span>
               </a>
               <p className="text-sm text-[#6B6B6B] hidden sm:block">
                 Compará precios en Uruguay
