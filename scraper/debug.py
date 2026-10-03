@@ -5,22 +5,20 @@ async def debug():
     async with async_playwright() as p:
         browser = await p.chromium.launch(headless=True)
         page = await browser.new_page()
-        await page.goto("https://babycity.com.uy/dormitorio/practicunas-corrales/1", wait_until="load", timeout=60000)
-        await page.wait_for_timeout(2000)
+        await page.goto("https://arlequin.uy/categoria-producto/cunas/", wait_until="networkidle", timeout=30000)
 
         title = await page.title()
         print(f"Title: {title}")
 
-        for sel in ['a[href*="/p/"]', '[class*="product"]', 'article', '.item', 'li']:
+        for sel in ['li.product', 'article', '.product-item', 'ul.products li']:
             els = await page.query_selector_all(sel)
             if els:
                 print(f"'{sel}': {len(els)}")
 
-        el = await page.query_selector('a[href*="/p/"]')
+        el = await page.query_selector("li.product") or await page.query_selector("article")
         if el:
-            parent = await el.evaluate_handle("el => el.parentElement")
-            html = await parent.evaluate("el => el.outerHTML")
-            print("\n--- Parent of first /p/ link ---")
+            html = await el.evaluate("el => el.outerHTML")
+            print("\n--- First product card ---")
             print(html[:3000])
 
         await browser.close()
