@@ -62,6 +62,15 @@ export default function ProductCard({ product }: { product: Product }) {
             <span className="text-sm text-gray-400 line-through">{originalDisplay}</span>
           )}
         </div>
+
+        <p className="text-xs text-gray-300 mt-1">
+          * Actualizado el{" "}
+          {new Date(product.scraped_at).toLocaleDateString("es-UY", {
+            day: "numeric",
+            month: "short",
+            year: "numeric",
+          })}
+        </p>
       </div>
     </a>
   );
