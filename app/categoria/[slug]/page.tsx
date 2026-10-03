@@ -24,7 +24,12 @@ export default async function CategoryPage({
   const cat = categories.find((c) => c.id === slug);
   if (!cat) notFound();
 
+  // Sub-categorías propias, o hermanas si somos un hijo
   const subCategories = categories.filter((c) => c.parent_id === slug);
+  const sidebarParent = subCategories.length > 0 ? cat : categories.find((c) => c.id === cat.parent_id);
+  const sidebarItems = sidebarParent
+    ? categories.filter((c) => c.parent_id === sidebarParent.id)
+    : [];
 
   let products = allProducts;
   if (store) products = products.filter((p) => p.store === store);
@@ -42,23 +47,29 @@ export default async function CategoryPage({
   return (
     <div className="flex gap-8">
       {/* Sidebar subcategorías */}
-      {subCategories.length > 0 && (
-        <aside className="hidden md:block w-44 shrink-0 pt-2">
-          <p className="text-[11px] font-extrabold text-[#8E9FA0] uppercase tracking-widest mb-3">
-            {cat.label}
-          </p>
-          <ul className="flex flex-col gap-1">
-            {subCategories.map((sub) => (
-              <li key={sub.id}>
-                <Link
-                  href={`/categoria/${sub.id}`}
-                  className="block text-sm font-semibold text-[#1A1A1A] hover:text-[#72C5A2] transition-colors py-1"
-                >
-                  {sub.label}
-                </Link>
-              </li>
-            ))}
-          </ul>
+      {sidebarItems.length > 0 && (
+        <aside className="hidden md:block w-44 shrink-0">
+          <div className="sticky top-32 pt-2">
+            <p className="text-[11px] font-extrabold text-[#8E9FA0] uppercase tracking-widest mb-3">
+              {sidebarParent?.label}
+            </p>
+            <ul className="flex flex-col gap-1">
+              {sidebarItems.map((sub) => (
+                <li key={sub.id}>
+                  <Link
+                    href={`/categoria/${sub.id}`}
+                    className={`block text-sm font-semibold py-1 transition-colors ${
+                      sub.id === slug
+                        ? "text-[#72C5A2]"
+                        : "text-[#1A1A1A] hover:text-[#72C5A2]"
+                    }`}
+                  >
+                    {sub.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
         </aside>
       )}
 
