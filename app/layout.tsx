@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { getCategories, buildTree, Category } from "@/lib/products";
 import TopNav from "./components/TopNav";
+import AuthButton from "./components/AuthButton";
 
 export const metadata: Metadata = {
   title: "Mini Klub — Compará precios de artículos de bebé en Uruguay",
@@ -26,9 +27,12 @@ export default async function RootLayout({
                 {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img src="/logo.svg" alt="Mini Klub" className="h-12 w-auto" />
               </a>
-              <p className="text-sm text-white/80 hidden sm:block font-semibold">
-                Lo lindo de encontrarlo todo.
-              </p>
+              <div className="flex items-center gap-6">
+                <p className="text-sm text-white/80 hidden sm:block font-semibold">
+                  Lo lindo de encontrarlo todo.
+                </p>
+                <AuthButton />
+              </div>
             </div>
           </div>
           <TopNav tree={tree} />

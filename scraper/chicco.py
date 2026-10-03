@@ -3,20 +3,18 @@ import json
 import re
 from datetime import datetime
 from playwright.async_api import async_playwright
-from db import upsert_products
+from db import upsert_products, delete_missing_products
 
 STORE = "Chicco"
 BASE_URL = "https://www.chicco.com.uy"
 
 # (url, category, subcategory)
 PAGES = [
-    # Movilidad - Coches
-    (f"{BASE_URL}/catalogo/de-paseo/coches-travel-system/",     "movilidad",     "movilidad-coches-ts"),
-    (f"{BASE_URL}/catalogo/de-paseo/coches-ultralivianos/",     "movilidad",     "movilidad-coches-paseo"),
-    (f"{BASE_URL}/catalogo/de-paseo/coches-de-mellizos/",       "movilidad",     "movilidad-coches-doble"),
+    # de-paseo: todas las subcategorías devuelven los mismos productos, clasificamos por nombre
     (f"{BASE_URL}/catalogo/de-paseo/porta-bebes/",              "movilidad",     "movilidad-porteo"),
     # Movilidad - Sillas de auto
     (f"{BASE_URL}/catalogo/de-viaje/sillas-de-auto/",           "movilidad",     "movilidad-auto-butaca"),
+    (f"{BASE_URL}/catalogo/de-viaje/sillas-de-auto/gofit/",     "movilidad",     "movilidad-auto-booster"),
     # Descanso
     (f"{BASE_URL}/catalogo/descanso/practicunas/",              "descanso",      "descanso-practicunas"),
     # Estimulación
@@ -43,6 +41,8 @@ PAGES = [
     (f"{BASE_URL}/catalogo/bano/higiene/",                      "bano",          "bano-higiene"),
     # Seguridad
     (f"{BASE_URL}/catalogo/cuidado/seguridad/",                 "seguridad",     "seguridad-portones"),
+    # Accesorios para coches
+    (f"{BASE_URL}/catalogo/de-paseo/accesorios-para-coches/",   "bolsos",        "bolsos-accesorios-coche"),
 ]
 
 
@@ -53,6 +53,24 @@ def parse_price(moneda: str, precio: str) -> tuple[int | None, str, str]:
     digits = re.sub(r"[^0-9]", "", precio.split(",")[0])
     currency = "USD" if any(x in moneda for x in ("U$S", "US$", "USD")) else "UYU"
     return (int(digits) if digits else None), full_text, currency
+
+
+PASEO_NAME_MAP = {
+    "movilidad-coches-ts": ["travel system", "we travel", "bellagio"],
+    "movilidad-coches-doble": ["twin", "mellizo", "ohlalà twin"],
+    "movilidad-coches-paseo": ["cochecito", "trolley me", "mini bravo", "urbino", "glee", "we 2"],
+    "bolsos-accesorios-coche": ["ganchos universales", "porta vaso", "accesorio"],
+    "estim-mecedoras": ["comfygrow", "bouncer", "columpio"],
+}
+
+
+def classify_paseo(name: str) -> str | None:
+    """Return the correct subcategory for a de-paseo product based on its name, or None to keep default."""
+    name_lower = name.lower()
+    for sub, keywords in PASEO_NAME_MAP.items():
+        if any(kw in name_lower for kw in keywords):
+            return sub
+    return None
 
 
 async def scrape_page(page, url: str, category: str, subcategory: str) -> list[dict]:
@@ -85,6 +103,14 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
         slug = href.rstrip("/").split("/")[-1] if href else name.lower().replace(" ", "-")
         full_url = f"{BASE_URL}{href}" if href.startswith("/") else href
 
+        # For porta-bebes page, override subcategory by product name
+        final_sub = subcategory
+        if "porta-bebes" in url:
+            classified = classify_paseo(name)
+            if classified:
+                final_sub = classified
+                category = "movilidad" if classified.startswith("movilidad") else ("bolsos" if classified.startswith("bolsos") else "estimulacion")
+
         products.append({
             "id": slug,
             "name": name,
@@ -99,7 +125,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             "product_url": full_url,
             "store": STORE,
             "category": category,
-            "subcategory": subcategory,
+            "subcategory": final_sub,
             "scraped_at": datetime.utcnow().isoformat(),
         })
 
@@ -128,8 +154,11 @@ async def main():
 
     if all_products:
         count = upsert_products(all_products)
+        current_ids = [p["id"] for p in all_products]
+        deleted = delete_missing_products(STORE, current_ids)
         print(f"\nUpserted {count} products to Supabase")
-        print("Sample:", json.dumps(all_products[0], ensure_ascii=False, indent=2))
+        print(f"Deleted {deleted} products no longer in store")
+        print(f"Total scraped: {len(all_products)}")
     else:
         print("No products found.")
 

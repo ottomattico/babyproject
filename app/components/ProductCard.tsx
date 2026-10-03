@@ -1,4 +1,5 @@
 import { Product } from "@/lib/products";
+import AddToListButton from "./AddToListButton";
 
 function formatPrice(amount: number | null, currency: string): string {
   if (amount === null) return "";
@@ -42,6 +43,9 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
     >
       {/* Image */}
       <div className="relative aspect-square overflow-hidden bg-[#EFECE5]">
+        <div className="absolute top-2 right-2 z-10" onClick={(e) => e.preventDefault()}>
+          <AddToListButton productId={product.id} productStore={product.store} />
+        </div>
         {product.image_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -62,7 +66,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
           {product.store}
         </span>
       </div>
-      <div className="px-3 pt-2 pb-3 flex flex-col gap-1">
+      <div className="px-3 pt-2 pb-3 flex flex-col gap-1 flex-1">
 
         <h2 className="text-[13px] text-[#1A1A1A] line-clamp-2 leading-[1.4]">
           {product.name}
@@ -98,7 +102,7 @@ export default function ProductCard({ product, usdRate = 43 }: { product: Produc
             </div>
           )}
         </div>
-        <p className="text-[10px] text-[#B8B0A4] mt-2">
+        <p className="text-[10px] text-[#B8B0A4] mt-auto pt-2">
           Actualizado {new Date(product.scraped_at).toLocaleString("es-UY", {
             day: "numeric",
             month: "short",

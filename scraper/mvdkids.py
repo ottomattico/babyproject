@@ -3,7 +3,7 @@ import json
 import re
 from datetime import datetime
 from playwright.async_api import async_playwright
-from db import upsert_products
+from db import upsert_products, delete_missing_products
 
 STORE = "MVD Kids"
 BASE_URL = "https://www.mvdkids.com"
@@ -171,7 +171,7 @@ async def scrape_page(page, url: str, category: str, subcategory: str) -> list[d
             alt = (await img_el.get_attribute("alt") or "").lower()
             if not src:
                 continue
-            if any(x in alt for x in ["nuevo", "new", "oferta", "sale", "tag", "badge"]):
+            if any(alt == x or alt.startswith(x + " ") for x in ["nuevo", "new", "oferta", "sale", "tag", "badge"]):
                 continue
             if any(x in src.lower() for x in ["/tags/", "/badges/", "/stickers/", ".mp4"]):
                 continue
@@ -219,7 +219,10 @@ async def main():
 
     if all_products:
         count = upsert_products(all_products)
+        current_ids = [p["id"] for p in all_products]
+        deleted = delete_missing_products(STORE, current_ids)
         print(f"\nUpserted {count} products to Supabase")
+        print(f"Deleted {deleted} products no longer in store")
         print(f"Total scraped: {len(all_products)}")
     else:
         print("No products found.")

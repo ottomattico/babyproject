@@ -27,3 +27,18 @@ def upsert_products(products: list[dict]) -> int:
     rows = list(seen.values())
     result = db.table("products").upsert(rows, on_conflict="store,id").execute()
     return len(result.data)
+
+
+def delete_missing_products(store: str, current_ids: list[str]) -> int:
+    """Delete products from store that are no longer found in the scrape."""
+    if not current_ids:
+        return 0
+    db = get_client()
+    # Fetch all existing IDs for this store
+    existing = db.table("products").select("id").eq("store", store).execute()
+    existing_ids = {row["id"] for row in existing.data}
+    to_delete = list(existing_ids - set(current_ids))
+    if not to_delete:
+        return 0
+    result = db.table("products").delete().eq("store", store).in_("id", to_delete).execute()
+    return len(result.data)

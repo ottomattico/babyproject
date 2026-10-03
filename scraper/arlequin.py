@@ -3,7 +3,7 @@ import json
 import re
 from datetime import datetime
 from playwright.async_api import async_playwright
-from db import upsert_products
+from db import upsert_products, delete_missing_products
 
 STORE = "Arlequin"
 BASE_URL = "https://arlequin.uy"
@@ -109,8 +109,11 @@ async def main():
 
     if all_products:
         count = upsert_products(all_products)
+        current_ids = [p["id"] for p in all_products]
+        deleted = delete_missing_products(STORE, current_ids)
         print(f"\nUpserted {count} products to Supabase")
-        print("Sample:", json.dumps(all_products[0], ensure_ascii=False, indent=2))
+        print(f"Deleted {deleted} products no longer in store")
+        print(f"Total scraped: {len(all_products)}")
     else:
         print("No products found.")
 
