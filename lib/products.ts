@@ -29,11 +29,18 @@ export type Category = {
   sort_order: number;
 };
 
-export async function getProducts(subcategory: string): Promise<Product[]> {
+export async function getProducts(subcategory: string, allCategories?: Category[]): Promise<Product[]> {
+  // Include products from child categories too (e.g. "movilidad-coches" includes "-ts", "-paseo", etc.)
+  let slugs = [subcategory];
+  if (allCategories) {
+    const children = allCategories.filter((c) => c.parent_id === subcategory).map((c) => c.id);
+    slugs = [subcategory, ...children];
+  }
+
   const { data, error } = await supabase
     .from("products")
     .select("*")
-    .eq("subcategory", subcategory)
+    .in("subcategory", slugs)
     .order("store")
     .order("name");
   if (error) {
